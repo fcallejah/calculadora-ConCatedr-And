@@ -11,21 +11,46 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page-shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">BOJA · Concurso de acceso</p>
-          <h1>Calculadora orientativa</h1>
-        </div>
-        <button id="resetBtn" class="ghost-button" type="button">Reiniciar</button>
-      </header>
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="eyebrow">Andalucía · 2026</span>
+        <h1>Calculadora orientativa</h1>
+      </div>
 
+      <div class="topbar-actions">
+        <a
+          class="boja-link"
+          href="https://www.juntadeandalucia.es/boja/2026/183/c01/BOJA26-218301-00030-12327-01_00343557.pdf"
+          target="_blank"
+          rel="noreferrer"
+        >
+          BOJA 2026
+        </a>
+
+        <div class="live-score-pill" aria-live="polite">
+          <span>Puntuación</span>
+          <strong id="headerScore">0.00</strong>
+        </div>
+
+        <button
+          id="resetBtn"
+          class="icon-button"
+          type="button"
+          title="Borrar todos los campos"
+          aria-label="Borrar todos los campos"
+        >
+          🧽
+        </button>
+      </div>
+    </header>
+
+    <div class="page-shell">
       <main class="layout">
         <section class="panel form-panel">
           <div class="intro-card">
             <h2>Concurso de acceso a Catedráticos · Andalucía 2026</h2>
             <p>
-              Esta herramienta es una estimación orientativa para valorar rápidamente el
+              Esta herramienta es una estimación orientativa para valorar con rapidez el
               impacto de tus méritos. La normativa oficial del BOJA debe validarse siempre
               con la convocatoria vigente.
             </p>
@@ -175,7 +200,7 @@
 
           <div class="source-box">
             <p>
-              Fuente: BOJA Andalucía 2026.<br />
+              Fuente: BOJA de Andalucía 2026.<br />
               <strong>Nota:</strong> esta app es una herramienta orientativa y debe contrastarse
               con la convocatoria oficial y la baremación exacta publicada.
             </p>
