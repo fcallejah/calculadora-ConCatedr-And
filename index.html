@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora Catedráticos Andalucía 2026</title>
+    <meta
+      name="description"
+      content="Calculadora orientativa para el concurso de acceso a Catedráticos de Andalucía 2026."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">BOJA · Concurso de acceso</p>
+          <h1>Calculadora orientativa</h1>
+        </div>
+        <button id="resetBtn" class="ghost-button" type="button">Reiniciar</button>
+      </header>
+
+      <main class="layout">
+        <section class="panel form-panel">
+          <div class="intro-card">
+            <h2>Concurso de acceso a Catedráticos · Andalucía 2026</h2>
+            <p>
+              Esta herramienta es una estimación orientativa para valorar rápidamente el
+              impacto de tus méritos. La normativa oficial del BOJA debe validarse siempre
+              con la convocatoria vigente.
+            </p>
+          </div>
+
+          <form id="calculatorForm" novalidate>
+            <section class="section-block">
+              <div class="section-header">
+                <h3>Investigación</h3>
+                <span class="pill">máx. 4,5</span>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span>Sexenios</span>
+                  <input type="number" id="sexenios" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Artículos y producción científica</span>
+                  <input type="number" id="publicaciones" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Tesis dirigidas / proyectos relevantes</span>
+                  <input type="number" id="tesis" min="0" step="0.1" value="0" />
+                </label>
+              </div>
+            </section>
+
+            <section class="section-block">
+              <div class="section-header">
+                <h3>Docencia</h3>
+                <span class="pill">máx. 3,0</span>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span>Años de docencia</span>
+                  <input type="number" id="anosDocencia" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Asignaturas / coordinación</span>
+                  <input type="number" id="asignaturas" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Dirección / tutorías</span>
+                  <input type="number" id="tutorias" min="0" step="0.1" value="0" />
+                </label>
+              </div>
+            </section>
+
+            <section class="section-block">
+              <div class="section-header">
+                <h3>Transferencia e innovación</h3>
+                <span class="pill">máx. 1,5</span>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span>Proyectos / contratos</span>
+                  <input type="number" id="proyectos" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Patentes / innovación</span>
+                  <input type="number" id="innovacion" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Participación institucional</span>
+                  <input type="number" id="participacion" min="0" step="0.1" value="0" />
+                </label>
+              </div>
+            </section>
+
+            <section class="section-block">
+              <div class="section-header">
+                <h3>Otros méritos</h3>
+                <span class="pill">máx. 1,0</span>
+              </div>
+
+              <div class="field-grid">
+                <label class="field">
+                  <span>Premios / reconocimientos</span>
+                  <input type="number" id="premios" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Cargos / comisiones</span>
+                  <input type="number" id="cargos" min="0" step="0.1" value="0" />
+                </label>
+
+                <label class="field">
+                  <span>Formación / cursos</span>
+                  <input type="number" id="formacion" min="0" step="0.1" value="0" />
+                </label>
+              </div>
+            </section>
+          </form>
+        </section>
+
+        <aside class="panel result-panel">
+          <div class="result-header">
+            <p class="eyebrow muted">Resultado estimado</p>
+            <div class="score-wrap">
+              <span id="totalScore">0.00</span>
+              <small>puntos</small>
+            </div>
+          </div>
+
+          <div class="progress-block">
+            <div class="progress-labels">
+              <span>Progreso total</span>
+              <strong id="progressLabel">0%</strong>
+            </div>
+            <div class="progress-bar">
+              <div id="progressBar" class="progress-fill"></div>
+            </div>
+          </div>
+
+          <div class="breakdown">
+            <div class="breakdown-item">
+              <span>Investigación</span>
+              <strong id="totalInvestigacion">0.00</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Docencia</span>
+              <strong id="totalDocencia">0.00</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Transferencia</span>
+              <strong id="totalTransferencia">0.00</strong>
+            </div>
+            <div class="breakdown-item">
+              <span>Otros méritos</span>
+              <strong id="totalOtros">0.00</strong>
+            </div>
+          </div>
+
+          <div class="insight-box" id="insightBox">
+            <h4>Valoración</h4>
+            <p>Introduce tus datos para obtener una estimación.</p>
+          </div>
+
+          <div class="source-box">
+            <p>
+              Fuente: BOJA Andalucía 2026.<br />
+              <strong>Nota:</strong> esta app es una herramienta orientativa y debe contrastarse
+              con la convocatoria oficial y la baremación exacta publicada.
+            </p>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
