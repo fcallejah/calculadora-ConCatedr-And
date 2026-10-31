@@ -1,131 +1,39 @@
-const MAX_TOTAL = 10;
+# Calculadora de Baremo - Catedráticos Andalucía 2026
 
-const baremo = {
-  investigacion: {
-    max: 4.5,
-    items: {
-      sexenios: { max: 2.5, factor: 0.4 },
-      publicaciones: { max: 1.4, factor: 0.08 },
-      tesis: { max: 0.6, factor: 0.18 }
-    }
-  },
-  docencia: {
-    max: 3,
-    items: {
-      anosDocencia: { max: 1.4, factor: 0.12 },
-      asignaturas: { max: 0.9, factor: 0.08 },
-      tutorias: { max: 0.7, factor: 0.1 }
-    }
-  },
-  transferencia: {
-    max: 1.5,
-    items: {
-      proyectos: { max: 0.7, factor: 0.08 },
-      innovacion: { max: 0.45, factor: 0.1 },
-      participacion: { max: 0.35, factor: 0.1 }
-    }
-  },
-  otros: {
-    max: 1,
-    items: {
-      premios: { max: 0.4, factor: 0.12 },
-      cargos: { max: 0.35, factor: 0.1 },
-      formacion: { max: 0.25, factor: 0.1 }
-    }
-  }
-};
+Herramienta web interactiva diseñada para que el profesorado de Andalucía pueda **calcular de forma orientativa y sencilla** la puntuación de sus méritos para el concurso de acceso a Catedráticos (Orden de 18 de septiembre de 2026, BOJA n.º 183).
 
-const form = document.getElementById("calculatorForm");
-const totalScoreEl = document.getElementById("totalScore");
-const progressBarEl = document.getElementById("progressBar");
-const progressLabelEl = document.getElementById("progressLabel");
-const insightBox = document.getElementById("insightBox");
+La aplicación traduce la complejidad del baremo oficial (10 puntos divididos en 3 bloques) a una interfaz visual, moderna e intuitiva.
 
-const categoryTotals = {
-  investigacion: document.getElementById("totalInvestigacion"),
-  docencia: document.getElementById("totalDocencia"),
-  transferencia: document.getElementById("totalTransferencia"),
-  otros: document.getElementById("totalOtros")
-};
+## ✨ Características principales
 
-const resetBtn = document.getElementById("resetBtn");
+* **Fidelidad total al BOJA:** Los cálculos respetan los topes exactos (5,5 ptos. para Trabajo desarrollado, 3,0 para Formación y 3,0 para Méritos académicos).
+* **Gestión inteligente de la antigüedad (1.1):**
+  * Calcula automáticamente el exceso sobre los 8 años mínimos exigidos.
+  * Alerta en tiempo real si aún no cumples con el requisito de antigüedad (indicando los años que faltan y el año estimado en que podrás participar).
+  * **Botón de "Estabilización":** Adaptado para quienes obtuvieron plaza sin realizar la fase de prácticas.
+  * Validación de la relación de años entre prácticas y carrera (tolerancia de +1 o +2 años).
+* **Sistema dinámico de Idiomas (3.1.10, 3.1.11):** 
+  * Gestión coordinada de certificados de la Escuela Oficial de Idiomas (EOI) y ACLES.
+  * Selección automática de la puntuación más alta por idioma, evitando duplicidades (solo cuenta el nivel superior).
+* **Diseño UX/UI Avanzado:**
+  * Modo claro y **modo oscuro** (se guarda la preferencia del usuario).
+  * Barras de progreso por cada bloque que se iluminan al alcanzar el máximo.
+  * Diseño totalmente *responsive* (adaptado a móviles, tablets y ordenadores).
+* **Guardado automático:** Los datos se guardan en el navegador (`localStorage`), por lo que no perderás la información si recargas la página.
+* **Sin dependencias:** Todo el código (HTML, CSS y JavaScript puro) está integrado en un solo archivo. No requiere instalación ni servidores.
 
-function clampToMax(value, max) {
-  return Math.min(value, max);
-}
+## 🚀 ¿Cómo usarla?
 
-function getInputValue(id) {
-  const element = document.getElementById(id);
-  if (!element) return 0;
-  const value = Number(element.value || 0);
-  return Number.isFinite(value) ? value : 0;
-}
+No necesitas instalar nada. Solo tienes que:
+1. Descargar el archivo `index.html` de este repositorio.
+2. Hacer doble clic sobre él para abrirlo en tu navegador web.
+*(O puedes visitar la versión desplegada a través de **GitHub Pages** si está activada).*
 
-function calculateCategory(categoryKey) {
-  const section = baremo[categoryKey];
-  let total = 0;
+## ⚠️ Aviso Legal
 
-  Object.entries(section.items).forEach(([id, config]) => {
-    const rawValue = getInputValue(id);
-    const computed = rawValue * config.factor;
-    total += clampToMax(computed, config.max);
-  });
+**Esta herramienta es orientativa.** No es un servicio oficial ni está vinculada a la Junta de Andalucía. Los resultados son únicamente estimaciones basadas en la lectura del BOJA y **no sustituyen la baremación oficial** que realicen las comisiones de baremación. Las bases y criterios pueden variar o sufrir correcciones; verifica siempre la normativa vigente.
 
-  total = Number(total.toFixed(2));
-  categoryTotals[categoryKey].textContent = total.toFixed(2);
-  return total;
-}
+## 👨‍💻 Autoría
 
-function buildInsight(total) {
-  if (total <= 3) {
-    return {
-      title: "Puntuación baja",
-      text: "Tu escenario actual se sitúa aún por debajo de la referencia orientativa. Conviene priorizar la documentación y reforzar los méritos más valorados."
-    };
-  }
-
-  if (total <= 6) {
-    return {
-      title: "Puntuación intermedia",
-      text: "Estás en una zona competitiva. Con una mejora puntual en investigación o docencia podrías elevar bastante tu posición."
-    };
-  }
-
-  if (total <= 8) {
-    return {
-      title: "Puntuación sólida",
-      text: "Tu perfil es muy competitivo. La diferencia con la parte alta probablemente depende de reforzar detales de calidad y trayectoria."
-    };
-  }
-
-  return {
-    title: "Puntuación muy alta",
-    text: "Tu perfil parece muy bien posicionado. Aun así, conviene verificar con el baremo oficial y la convocatoria concreta para confirmar cada métrica."
-  };
-}
-
-function render() {
-  const investigation = calculateCategory("investigacion");
-  const docencia = calculateCategory("docencia");
-  const transfer = calculateCategory("transferencia");
-  const other = calculateCategory("otros");
-
-  const total = Number((investigation + docencia + transfer + other).toFixed(2));
-  const percent = Math.min((total / MAX_TOTAL) * 100, 100);
-
-  totalScoreEl.textContent = total.toFixed(2);
-  progressBarEl.style.width = `${percent}%`;
-  progressLabelEl.textContent = `${Math.round(percent)}%`;
-
-  const insight = buildInsight(total);
-  insightBox.innerHTML = `<h4>${insight.title}</h4><p>${insight.text}</p>`;
-}
-
-form.addEventListener("input", render);
-
-resetBtn.addEventListener("click", () => {
-  form.reset();
-  render();
-});
-
-render();
+Calculadora creada a través de **DeepSeek** y **GitHub Copilot** por [fcallejah](https://github.com/fcallejah).
+Si encuentras algún error o quieres proponer una mejora, ¡siéntete libre de abrir un *Issue* o un *Pull Request*!
