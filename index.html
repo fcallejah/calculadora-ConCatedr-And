@@ -1,214 +1,1282 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora Catedráticos Andalucía 2026</title>
-    <meta
-      name="description"
-      content="Calculadora orientativa para el concurso de acceso a Catedráticos de Andalucía 2026."
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="brand-block">
-        <span class="eyebrow">Andalucía · 2026</span>
-        <h1>Calculadora orientativa</h1>
-      </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Baremo Completa - Catedráticos Andalucía 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Añadimos JetBrains Mono para los números -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --primary-light: #ccfbf1;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --danger-dark: #991b1b;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-header: #ffffff;
+            --bg-input: #ffffff;
+            --bg-hover: #f9fafb;
+            --bg-footer: #f8fafc;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 15px rgba(16, 185, 129, 0.4);
+            --radius: 12px;
+            
+            /* Fuente monoespaciada para números */
+            --font-mono: 'JetBrains Mono', monospace;
+        }
 
-      <div class="topbar-actions">
-        <a
-          class="boja-link"
-          href="https://www.juntadeandalucia.es/boja/2026/183/c01/BOJA26-218301-00030-12327-01_00343557.pdf"
-          target="_blank"
-          rel="noreferrer"
-        >
-          BOJA 2026
-        </a>
+        [data-theme="dark"] {
+            --primary: #2dd4bf;
+            --primary-hover: #14b8a6;
+            --primary-light: #134e4a;
+            --success: #34d399;
+            --success-light: #064e3b;
+            --danger: #f87171;
+            --danger-light: #7f1d1d;
+            --danger-dark: #fca5a5;
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-header: #1e293b;
+            --bg-input: #0f172a;
+            --bg-hover: #334155;
+            --bg-footer: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 20px rgba(52, 211, 153, 0.2);
+        }
 
-        <div class="live-score-pill" aria-live="polite">
-          <span>Puntuación</span>
-          <strong id="headerScore">0.00</strong>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- FUENTE PARA NÚMEROS --- */
+        .score-number, .total-badge div, .value, .block-bar-value, .highlight {
+            font-family: var(--font-mono);
+            font-feature-settings: "zero" 1; /* Fuerza el cero rayado */
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+        .logo-area span { font-size: 0.75rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .header-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+        .btn-boja {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg-hover);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-boja:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .btn-boja svg { width: 14px; height: 14px; }
+
+        .total-badge {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--primary);
+        }
+        .total-badge span { font-size: 0.75rem; text-transform: uppercase; opacity: 0.9; font-family: 'Inter', sans-serif; }
+
+        .theme-toggle {
+            background: none; border: 1px solid var(--border); color: var(--text-main);
+            cursor: pointer; padding: 0.5rem; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px;
+        }
+        .theme-toggle:hover { background-color: var(--bg-hover); }
+        .theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            align-items: start;
+            flex: 1; /* Empuja el footer hacia abajo */
+            width: 100%;
+        }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+        /* --- CARDS Y ACORDEONES --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .card.max-reached { border-color: var(--success); box-shadow: var(--shadow-glow); }
+
+        .card-header {
+            background-color: var(--bg-hover);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+        }
+        .card.max-reached .card-header { background-color: var(--success-light); border-bottom-color: var(--success); }
+
+        .card-header-content {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h2 { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+
+        .badge {
+            background: var(--primary); color: var(--bg-card); font-size: 0.75rem;
+            padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 600; white-space: nowrap;
+        }
+        .card.max-reached .badge { background: var(--success); color: #ffffff; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .section-progress-container { height: 6px; width: 100%; background: var(--border); }
+        .section-progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 0.4s ease-out, background-color 0.3s; }
+        .card.max-reached .section-progress-bar { background: var(--success); }
+
+        .card-body { padding: 1.5rem; display: none; }
+        .card.open .card-body { display: block; }
+
+        /* --- ETIQUETAS DE REFERENCIA BOJA --- */
+        .ref {
+            display: inline-block; background: var(--border); color: var(--text-muted);
+            font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px;
+            margin-right: 0.4rem; font-weight: 700; vertical-align: middle;
+        }
+
+        /* --- FORMULARIOS --- */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        @media (max-width: 600px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .form-group small { display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+        .sub-section { border-top: 1px dashed var(--border); padding-top: 1.25rem; margin-top: 1.25rem; }
+        .sub-section h3 { font-size: 0.95rem; margin-bottom: 1rem; color: var(--primary); }
+
+        .input-control {
+            width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border);
+            border-radius: 8px; font-size: 0.95rem; font-family: inherit;
+            background: var(--bg-input); color: var(--text-main);
+        }
+        .input-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .input-control:disabled { background-color: var(--bg-hover); color: var(--text-muted); cursor: not-allowed; border-style: dashed; }
+
+        /* ESTILO PARA ERROR EN INPUTS */
+        .input-control.input-error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px var(--danger-light) !important;
+        }
+
+        .error-text {
+            color: var(--danger);
+            font-size: 0.75rem;
+            margin-top: 0.35rem;
+            display: none;
+            font-weight: 500;
+        }
+        .error-text.visible { display: block; }
+
+        /* ALERTA ROJA 8 AÑOS */
+        .alert-danger {
+            background: var(--danger-light);
+            color: var(--danger-dark);
+            border: 1px solid var(--danger);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            line-height: 1.4;
+            display: none;
+        }
+        .alert-danger.visible { display: block; }
+        .alert-danger strong { font-weight: 700; }
+
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        .checkbox-group {
+            display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem;
+            border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-input); cursor: pointer;
+        }
+        .checkbox-group:hover { border-color: var(--primary); }
+        .checkbox-group input { margin-top: 0.25rem; width: 1.1rem; height: 1.1rem; accent-color: var(--primary); cursor: pointer; }
+        .checkbox-group label { margin-bottom: 0; cursor: pointer; font-weight: 500; }
+
+        /* --- CAJA ESPECIAL ANTIGÜEDAD --- */
+        .antiguedad-box {
+            background: var(--bg-hover); padding: 1rem; border-radius: 8px;
+            border: 1px dashed var(--border); margin-bottom: 1.5rem;
+        }
+        
+        .antiguedad-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: end;
+        }
+        
+        @media (max-width: 500px) {
+            .antiguedad-grid { grid-template-columns: 1fr; }
+        }
+
+        .antiguedad-grid .input-control {
+            max-width: 140px;
+            margin: 0 auto;
+        }
+
+        .label-center { text-align: center; }
+
+        .btn-estabilizacion {
+            height: 42px;
+            width: 60px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            transition: all 0.2s ease;
+        }
+        .btn-estabilizacion:hover { background: var(--bg-body); border-color: var(--text-muted); }
+        .btn-estabilizacion.active {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+            box-shadow: 0 0 0 2px var(--success-light);
+        }
+
+        .result-box {
+            margin-top: 1rem; padding: 0.75rem; background: var(--bg-card);
+            border-radius: 6px; border: 1px solid var(--border); font-size: 0.85rem;
+            color: var(--text-muted); line-height: 1.6;
+        }
+        .result-box strong { color: var(--text-main); }
+
+        /* --- SISTEMA DE IDIOMAS EN TARJETAS --- */
+        .alert-info {
+            background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;
+            padding: 0.75rem; border-radius: 8px; font-size: 0.8rem; margin-bottom: 1rem;
+        }
+        [data-theme="dark"] .alert-info {
+            background: #082f49; color: #7dd3fc; border-color: #0c4a6e;
+        }
+
+        .idiomas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .idioma-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .idioma-nombre {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* --- PANEL DE RESULTADOS --- */
+        .summary-card {
+            background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border); position: sticky; top: 90px; padding: 1.5rem;
+        }
+        .summary-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .score-display { text-align: center; margin-bottom: 2rem; }
+        .score-number { font-size: 3.5rem; font-weight: 700; color: var(--primary); line-height: 1; }
+        .score-max { font-size: 1rem; color: var(--text-muted); font-weight: 500; margin-top: 0.5rem; }
+        
+        .progress-bar-container { width: 100%; height: 8px; background: var(--border); border-radius: 999px; margin-bottom: 2rem; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); width: 0%; border-radius: 999px; transition: width 0.5s ease-out; }
+
+        .breakdown { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+        .breakdown-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+        .breakdown-item .label { font-weight: 500; }
+        .breakdown-item .value { font-weight: 600; background: var(--bg-hover); padding: 0.2rem 0.6rem; border-radius: 6px; }
+
+        .btn {
+            width: 100%; padding: 0.875rem; border: none; border-radius: 8px;
+            font-weight: 600; font-size: 0.95rem; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background: var(--primary); color: #ffffff; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-outline { background: transparent; color: var(--text-muted); border: 1px solid var(--border); margin-top: 0.75rem; }
+        .btn-outline:hover { background: var(--bg-hover); color: var(--text-main); }
+
+        .disclaimer { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 1.5rem; line-height: 1.4; }
+        .hidden { display: none !important; }
+
+        /* --- FOOTER --- */
+        .site-footer {
+            background-color: var(--bg-footer);
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .footer-text strong {
+            color: var(--text-main);
+        }
+
+        .btn-github {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--text-main);
+            color: var(--bg-card);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        .btn-github:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+        .btn-github svg { width: 18px; height: 18px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-area">
+                <span>Andalucía 2026</span>
+                <h1>Calculadora Catedráticos</h1>
+            </div>
+            <div class="header-actions">
+                <!-- BOTÓN BOJA -->
+                <a href="https://www.juntadeandalucia.es/boja/2026/183/c01/BOJA26-218301-00030-12327-01_00343557.pdf" target="_blank" rel="noreferrer" class="btn-boja" title="Abrir BOJA 2026 (PDF)">
+                    BOJA 2026
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+                
+                <div class="total-badge">
+                    <span>Total</span>
+                    <div id="headerTotal">0,00</div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+                    <svg id="iconMoon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg id="iconSun" style="display: none;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+            </div>
         </div>
-
-        <button
-          id="resetBtn"
-          class="icon-button"
-          type="button"
-          title="Borrar todos los campos"
-          aria-label="Borrar todos los campos"
-        >
-          🧽
-        </button>
-      </div>
     </header>
 
-    <div class="page-shell">
-      <main class="layout">
-        <section class="panel form-panel">
-          <div class="intro-card">
-            <h2>Concurso de acceso a Catedráticos · Andalucía 2026</h2>
-            <p>
-              Esta herramienta es una estimación orientativa para valorar con rapidez el
-              impacto de tus méritos. La normativa oficial del BOJA debe validarse siempre
-              con la convocatoria vigente.
-            </p>
-          </div>
+    <div class="container">
+        <div class="form-column">
+            
+            <!-- BLOQUE 1 -->
+            <div class="card open" id="cardBloque1">
+                <div class="card-header" onclick="toggleCard('cardBloque1')">
+                    <div class="card-header-content">
+                        <h2>1. Trabajo desarrollado <span class="badge" id="badgeBloque1">máx. 5,5 ptos.</span></h2>
+                        <span style="color: var(--text-muted); font-size: 1.2rem;">▼</span>
+                    </div>
+                    <div class="section-progress-container">
+                        <div class="section-progress-bar" id="barTrabajo"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    
+                    <div class="antiguedad-box">
+                        <label style="margin-bottom: 1rem; display: block;"><span class="ref">1.1</span> Cálculo de antigüedad (exceso sobre 8 años)</label>
+                        
+                        <div class="antiguedad-grid">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.75rem; color: var(--text-muted); text-align: center; display: block;">Año ingreso prácticas</label>
+                                <input type="number" id="anoPracticas" class="input-control calc-input" value="2010" min="1980" max="2026">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.75rem; color: var(--text-muted); text-align: center; display: block;">Estabilización</label>
+                                <button type="button" id="btnSinPracticas" class="btn-estabilizacion" onclick="togglePracticas()">No</button>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.75rem; color: var(--text-muted); text-align: center; display: block;">Año funcionario/a</label>
+                                <input type="number" id="anoCarrera" class="input-control calc-input" value="2011" min="1980" max="2026">
+                            </div>
+                        </div>
+                        
+                        <div id="errorAntiguedad" class="error-text text-center" style="text-align: center; margin-top: 0.5rem;">La diferencia debe ser de 1 o 2 años.</div>
+                        
+                        <div class="result-box" id="resultadoAntiguedad"></div>
 
-          <form id="calculatorForm" novalidate>
-            <section class="section-block">
-              <div class="section-header">
-                <h3>Investigación</h3>
-                <span class="pill">máx. 4,5</span>
-              </div>
+                        <div id="warningOchoAnos" class="alert-danger">
+                            ⚠️ <strong>Atención:</strong> aún no cumples el requisito de antigüedad mínima. Según el BOJA, necesitas al menos <strong>8 años como funcionario/a de carrera</strong> para poder participar. Te faltan <span id="anosFaltantes">8</span> años (<span id="anoFaltanteEstimado">2034</span>).
+                        </div>
+                    </div>
 
-              <div class="field-grid">
-                <label class="field">
-                  <span>Sexenios</span>
-                  <input type="number" id="sexenios" min="0" step="0.1" value="0" />
-                </label>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><span class="ref">1.2.2</span> Años como director/a</label>
+                            <input type="number" id="director" class="input-control calc-input" min="0" step="1" value="0">
+                            <small>0,1250 ptos./año</small>
+                        </div>
+                        <div class="form-group">
+                            <label><span class="ref">1.2.3</span> Años vicedirector/a, secretario/a, jefe/a estudios</label>
+                            <input type="number" id="vice" class="input-control calc-input" min="0" step="1" value="0">
+                            <small>0,1000 ptos./año</small>
+                        </div>
+                    </div>
 
-                <label class="field">
-                  <span>Artículos y producción científica</span>
-                  <input type="number" id="publicaciones" min="0" step="0.1" value="0" />
-                </label>
+                    <div class="form-group">
+                        <label><span class="ref">1.2.1</span> Años jefe/a departamento, coordinador/a, tutorías (desde 2007)</label>
+                        <input type="number" id="jefeDep" class="input-control calc-input" min="0" step="1" value="0">
+                        <small>0,0750 ptos./año</small>
+                    </div>
 
-                <label class="field">
-                  <span>Tesis dirigidas / proyectos relevantes</span>
-                  <input type="number" id="tesis" min="0" step="0.1" value="0" />
-                </label>
-              </div>
-            </section>
-
-            <section class="section-block">
-              <div class="section-header">
-                <h3>Docencia</h3>
-                <span class="pill">máx. 3,0</span>
-              </div>
-
-              <div class="field-grid">
-                <label class="field">
-                  <span>Años de docencia</span>
-                  <input type="number" id="anosDocencia" min="0" step="0.1" value="0" />
-                </label>
-
-                <label class="field">
-                  <span>Asignaturas / coordinación</span>
-                  <input type="number" id="asignaturas" min="0" step="0.1" value="0" />
-                </label>
-
-                <label class="field">
-                  <span>Dirección / tutorías</span>
-                  <input type="number" id="tutorias" min="0" step="0.1" value="0" />
-                </label>
-              </div>
-            </section>
-
-            <section class="section-block">
-              <div class="section-header">
-                <h3>Transferencia e innovación</h3>
-                <span class="pill">máx. 1,5</span>
-              </div>
-
-              <div class="field-grid">
-                <label class="field">
-                  <span>Proyectos / contratos</span>
-                  <input type="number" id="proyectos" min="0" step="0.1" value="0" />
-                </label>
-
-                <label class="field">
-                  <span>Patentes / innovación</span>
-                  <input type="number" id="innovacion" min="0" step="0.1" value="0" />
-                </label>
-
-                <label class="field">
-                  <span>Participación institucional</span>
-                  <input type="number" id="participacion" min="0" step="0.1" value="0" />
-                </label>
-              </div>
-            </section>
-
-            <section class="section-block">
-              <div class="section-header">
-                <h3>Otros méritos</h3>
-                <span class="pill">máx. 1,0</span>
-              </div>
-
-              <div class="field-grid">
-                <label class="field">
-                  <span>Premios / reconocimientos</span>
-                  <input type="number" id="premios" min="0" step="0.1" value="0" />
-                </label>
-
-                <label class="field">
-                  <span>Cargos / comisiones</span>
-                  <input type="number" id="cargos" min="0" step="0.1" value="0" />
-                </label>
-
-                <label class="field">
-                  <span>Formación / cursos</span>
-                  <input type="number" id="formacion" min="0" step="0.1" value="0" />
-                </label>
-              </div>
-            </section>
-          </form>
-        </section>
-
-        <aside class="panel result-panel">
-          <div class="result-header">
-            <p class="eyebrow muted">Resultado estimado</p>
-            <div class="score-wrap">
-              <span id="totalScore">0.00</span>
-              <small>puntos</small>
+                    <div class="sub-section">
+                        <h3>Otros apartados del Bloque 1</h3>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label><span class="ref">1.2.4</span> Años en servicios admon. educativa</label>
+                                <select id="serviciosAdm" class="input-control calc-input">
+                                    <option value="0">0 años</option>
+                                    <option value="0.075">compl. destino superior (0,0750 ptos./año)</option>
+                                    <option value="0.050">compl. destino igual (0,0500 ptos./año)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><span class="ref">1.2.5</span> N.º convocatorias como órgano de selección</label>
+                                <input type="number" id="organosSeleccion" class="input-control calc-input" min="0" step="1" value="0">
+                                <small>0,0750 ptos./convocatoria</small>
+                            </div>
+                            <div class="form-group">
+                                <label><span class="ref">1.2.6, 1.2.7, 1.2.8</span> Cursos tutorizando (prácticas, CAP, directores)</label>
+                                <input type="number" id="tutorizaciones" class="input-control calc-input" min="0" step="1" value="0">
+                                <small>0,0500 ptos. por curso</small>
+                            </div>
+                            <div class="form-group">
+                                <label><span class="ref">1.2.9</span> Años en centros de especial dificultad</label>
+                                <input type="number" id="dificultad" class="input-control calc-input" min="0" step="1" value="0">
+                                <small>0,0200 ptos./año</small>
+                            </div>
+                            <div class="form-group">
+                                <label><span class="ref">1.2.10, 1.2.11</span> Años en consejos escolares</label>
+                                <input type="number" id="consejos" class="input-control calc-input" min="0" step="1" value="0">
+                                <small>0,0200 ptos./año</small>
+                            </div>
+                            <div class="form-group">
+                                <label><span class="ref">1.2.12</span> Cursos como colaborador/a en EOI</label>
+                                <input type="number" id="colaboradorEOI" class="input-control calc-input" min="0" step="1" value="0">
+                                <small>0,0200 ptos./curso</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="progress-block">
-            <div class="progress-labels">
-              <span>Progreso total</span>
-              <strong id="progressLabel">0%</strong>
-            </div>
-            <div class="progress-bar">
-              <div id="progressBar" class="progress-fill"></div>
-            </div>
-          </div>
+            <!-- BLOQUE 2 -->
+            <div class="card open" id="cardBloque2">
+                <div class="card-header" onclick="toggleCard('cardBloque2')">
+                    <div class="card-header-content">
+                        <h2>2. Formación y perfeccionamiento <span class="badge" id="badgeBloque2">máx. 3,0 ptos.</span></h2>
+                        <span style="color: var(--text-muted); font-size: 1.2rem;">▼</span>
+                    </div>
+                    <div class="section-progress-container">
+                        <div class="section-progress-bar" id="barFormacion"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><span class="ref">2.1</span> Horas de cursos asistidos</label>
+                            <input type="number" id="horasAsistidas" class="input-control calc-input" min="0" step="1" value="0">
+                            <small>0,0750 ptos. por cada 20 h</small>
+                        </div>
+                        <div class="form-group">
+                            <label><span class="ref">2.2</span> Horas de cursos impartidos</label>
+                            <input type="number" id="horasImpartidas" class="input-control calc-input" min="0" step="1" value="0">
+                            <small>0,1500 ptos. por cada 20 h</small>
+                        </div>
+                    </div>
 
-          <div class="breakdown">
-            <div class="breakdown-item">
-              <span>Investigación</span>
-              <strong id="totalInvestigacion">0.00</strong>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label><span class="ref">2.3</span> N.º de especialidades nuevas</label>
+                            <input type="number" id="especialidades" class="input-control calc-input" min="0" step="1" value="0">
+                            <small>0,0500 ptos. por especialidad</small>
+                        </div>
+                        <div class="form-group">
+                            <label><span class="ref">2.4</span> Competencia digital docente</label>
+                            <select id="digital" class="input-control calc-input">
+                                <option value="0">Sin acreditación</option>
+                                <option value="0.025">Nivel A1 (0,0250 ptos.)</option>
+                                <option value="0.05">Nivel A2 (0,0500 ptos.)</option>
+                                <option value="0.075">Nivel B1 (0,0750 ptos.)</option>
+                                <option value="0.1">Nivel B2 (0,1000 ptos.)</option>
+                                <option value="0.15">Nivel C1 (0,1500 ptos.)</option>
+                                <option value="0.2">Nivel C2 (0,2000 ptos.)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="breakdown-item">
-              <span>Docencia</span>
-              <strong id="totalDocencia">0.00</strong>
-            </div>
-            <div class="breakdown-item">
-              <span>Transferencia</span>
-              <strong id="totalTransferencia">0.00</strong>
-            </div>
-            <div class="breakdown-item">
-              <span>Otros méritos</span>
-              <strong id="totalOtros">0.00</strong>
-            </div>
-          </div>
 
-          <div class="insight-box" id="insightBox">
-            <h4>Valoración</h4>
-            <p>Introduce tus datos para obtener una estimación.</p>
-          </div>
+            <!-- BLOQUE 3 -->
+            <div class="card open" id="cardBloque3">
+                <div class="card-header" onclick="toggleCard('cardBloque3')">
+                    <div class="card-header-content">
+                        <h2>3. Méritos académicos y otros <span class="badge" id="badgeBloque3">máx. 3,0 ptos.</span></h2>
+                        <span style="color: var(--text-muted); font-size: 1.2rem;">▼</span>
+                    </div>
+                    <div class="section-progress-container">
+                        <div class="section-progress-bar" id="barAcademicos"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- 3.1 TÍTULOS -->
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">3.1 Méritos académicos (máx. 1,5 ptos.)</h3>
+                    
+                    <div class="grid-2">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="docVinculado" class="calc-input" value="0.6">
+                            <div>
+                                <label for="docVinculado"><span class="ref">3.1.1</span> Doctorado vinculado a la especialidad</label>
+                                <small>0,6000 ptos.</small>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="docNoVinculado" class="calc-input" value="0.4">
+                            <div>
+                                <label for="docNoVinculado"><span class="ref">3.1.1</span> Doctorado no vinculado</label>
+                                <small>0,4000 ptos.</small>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="licenciatura" class="calc-input" value="0.4">
+                            <div>
+                                <label for="licenciatura"><span class="ref">3.1.3</span> Licenciatura / grado / ing. / arquitectura</label>
+                                <small>0,4000 ptos. (distinta al requisito)</small>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="diplomatura" class="calc-input" value="0.25">
+                            <div>
+                                <label for="diplomatura"><span class="ref">3.1.4</span> Diplomatura / ing. técnica</label>
+                                <small>0,2500 ptos.</small>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="premio" class="calc-input" value="0.1">
+                            <div>
+                                <label for="premio"><span class="ref">3.1.9</span> Premio extraordinario</label>
+                                <small>0,1000 ptos.</small>
+                            </div>
+                        </div>
+                    </div>
 
-          <div class="source-box">
-            <p>
-              Fuente: BOJA de Andalucía 2026.<br />
-              <strong>Nota:</strong> esta app es una herramienta orientativa y debe contrastarse
-              con la convocatoria oficial y la baremación exacta publicada.
-            </p>
-          </div>
-        </aside>
-      </main>
+                    <div class="grid-2" style="margin-top: 1rem;">
+                        <div class="form-group">
+                            <label><span class="ref">3.1.2</span> N.º de másteres oficiales (o suficiencia investigadora)</label>
+                            <input type="number" id="numMasters" class="input-control calc-input" min="0" step="1" value="0">
+                            <small>0,3000 ptos. cada uno (no puntúa si es requisito del doctorado)</small>
+                        </div>
+                        <div class="form-group">
+                            <label><span class="ref">3.1.5 a 3.1.8</span> N.º de títulos profesionales (música, FP, deportivo)</label>
+                            <input type="number" id="titulosProfesionales" class="input-control calc-input" min="0" step="1" value="0">
+                            <small>0,1250 ptos. cada uno</small>
+                        </div>
+                    </div>
+
+                    <!-- IDIOMAS EN TARJETAS -->
+                    <div class="sub-section">
+                        <h3><span class="ref">3.1.10, 3.1.11</span> Idiomas extranjeros (EOI y ACLES)</h3>
+                        <div class="alert-info">
+                            <strong>Nota:</strong> Solo se valora el certificado de nivel más alto por cada idioma. Rellena los desplegables de los idiomas que tengas; el sistema calculará automáticamente la puntuación más alta entre tu EOI y tu ACLES.
+                        </div>
+                        
+                        <div id="idiomasContainer" class="idiomas-grid">
+                            <!-- Las tarjetas de idiomas se generarán aquí -->
+                        </div>
+                    </div>
+
+                    <!-- 3.2 PUBLICACIONES Y PROYECTOS -->
+                    <div class="sub-section">
+                        <h3>3.2 Otros méritos (máx. 1,5 ptos.)</h3>
+                        
+                        <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem;"><span class="ref">3.2.1</span> Publicaciones (libros)</h4>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Autor único (0,25)</label>
+                                <input type="number" id="libroAutor" class="input-control calc-input" min="0" step="1" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>2 autores (0,15)</label>
+                                <input type="number" id="libro2Autores" class="input-control calc-input" min="0" step="1" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>3 autores (0,10)</label>
+                                <input type="number" id="libro3Autores" class="input-control calc-input" min="0" step="1" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>4 autores (0,05)</label>
+                                <input type="number" id="libro4Autores" class="input-control calc-input" min="0" step="1" value="0">
+                            </div>
+                        </div>
+
+                        <h4 style="font-size: 0.85rem; margin: 1rem 0 0.5rem;"><span class="ref">3.2.1</span> Publicaciones (revistas)</h4>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Autor único (0,10)</label>
+                                <input type="number" id="revistaAutor" class="input-control calc-input" min="0" step="1" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Coautor / 2 autores (0,05)</label>
+                                <input type="number" id="revistaCoautor" class="input-control calc-input" min="0" step="1" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>3 o más autores (0,04)</label>
+                                <input type="number" id="revista3Autores" class="input-control calc-input" min="0" step="1" value="0">
+                            </div>
+                        </div>
+
+                        <div class="grid-2" style="margin-top: 1rem;">
+                            <div class="form-group">
+                                <label><span class="ref">3.2.2</span> Ptos. proyectos investigación/innovación</label>
+                                <input type="number" id="proyectos" class="input-control calc-input" min="0" step="0.01" value="0">
+                                <small>Coord. (0,10) / partic. (0,05). Suma los ptos. aquí.</small>
+                            </div>
+                            <div class="form-group">
+                                <label><span class="ref">3.2.3, 3.2.4</span> Ptos. planes Andalucía / prof. asociado</label>
+                                <input type="number" id="planesAsociado" class="input-control calc-input" min="0" step="0.01" value="0">
+                                <small>Planes (0,05) / asociado (0,05). Suma los ptos. aquí.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ESPECIALIDADES ESPECÍFICAS -->
+                    <div class="sub-section">
+                        <div class="form-group">
+                            <label>¿Tu especialidad es música o educación física? (opcional)</label>
+                            <select id="especialidadEspecifica" class="input-control calc-input" onchange="toggleEspecialidades()">
+                                <option value="ninguna">No aplica / otras especialidades</option>
+                                <option value="musica">Música (apartado 3.3)</option>
+                                <option value="edfisica">Educación física (apartado 3.4)</option>
+                            </select>
+                        </div>
+
+                        <div id="bloqueMusica" class="hidden" style="margin-top: 1rem; padding: 1rem; background: var(--bg-hover); border-radius: 8px;">
+                            <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem;"><span class="ref">3.3</span> Méritos específicos de música</h4>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>Ptos. por conciertos (director / solista / etc.)</label>
+                                    <input type="number" id="conciertosMusica" class="input-control calc-input" min="0" step="0.01" value="0">
+                                    <small>Suma los ptos. según las tablas (0,05 / 0,03 / 0,04...)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ptos. por composiciones</label>
+                                    <input type="number" id="composicionesMusica" class="input-control calc-input" min="0" step="0.01" value="0">
+                                    <small>Gran formato (0,05) / otras (0,02). Suma ptos.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="bloqueEdFisica" class="hidden" style="margin-top: 1rem; padding: 1rem; background: var(--bg-hover); border-radius: 8px;">
+                            <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem;"><span class="ref">3.4</span> Méritos específicos de educación física</h4>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="deportistaAltoNivel" class="calc-input" value="0.05">
+                                <div>
+                                    <label for="deportistaAltoNivel">Deportista de alto nivel / alto rendimiento</label>
+                                    <small>0,0500 ptos.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: RESUMEN -->
+        <div class="summary-column">
+            <div class="summary-card">
+                <div class="summary-title">Resumen de puntuación</div>
+                
+                <div class="score-display">
+                    <div class="score-number" id="totalScoreDisplay">0,00</div>
+                    <div class="score-max">ptos. de 10,00</div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <div class="breakdown">
+                    <div class="breakdown-item">
+                        <span class="label">1. Trabajo desarrollado</span>
+                        <span class="value" id="scoreTrabajo">0,00 / 5,50</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">2. Formación</span>
+                        <span class="value" id="scoreFormacion">0,00 / 3,00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">3. Méritos académicos</span>
+                        <span class="value" id="scoreAcademicos">0,00 / 3,00</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="copiarResumen()">📋 Copiar resumen</button>
+                <button class="btn btn-outline" onclick="reiniciar()">🗑️ Borrar datos</button>
+
+                <div class="disclaimer">
+                    * Herramienta orientativa basada en la Orden de 18 de septiembre de 2026 (BOJA n.º 183). No sustituye la baremación oficial.
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="app.js"></script>
-  </body>
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p class="footer-text">
+                Calculadora creada a través de <strong>DeepSeek</strong> y <strong>GitHub Copilot</strong> por <strong>fcallejah</strong>.<br>
+                No es un servicio oficial ni vinculado a la Junta de Andalucía y los resultados son únicamente indicativos.
+            </p>
+            <a href="https://github.com/fcallejah/calculadora-ConCatedr-And" target="_blank" rel="noreferrer" class="btn-github">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                Ver en GitHub
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // --- LISTA DE IDIOMAS DISPONIBLES ---
+        const idiomasLista = [
+            { nombre: "Alemán", id: "aleman" },
+            { nombre: "Chino", id: "chino" },
+            { nombre: "Francés", id: "frances" },
+            { nombre: "Griego", id: "griego" },
+            { nombre: "Inglés", id: "ingles" },
+            { nombre: "Italiano", id: "italiano" },
+            { nombre: "Portugués", id: "portugues" },
+            { nombre: "Rumano", id: "rumano" },
+            { nombre: "Ruso", id: "ruso" },
+            { nombre: "Turco", id: "turco" }
+        ];
+
+        // --- LÓGICA DE ACORDEONES ---
+        function toggleCard(cardId) {
+            document.getElementById(cardId).classList.toggle('open');
+        }
+
+        function toggleEspecialidades() {
+            const tipo = document.getElementById('especialidadEspecifica').value;
+            document.getElementById('bloqueMusica').classList.toggle('hidden', tipo !== 'musica');
+            document.getElementById('bloqueEdFisica').classList.toggle('hidden', tipo !== 'edfisica');
+            calcular();
+        }
+
+        // --- LÓGICA ESTABILIZACIÓN (BOTÓN SÍ/NO) ---
+        function togglePracticas() {
+            const btn = document.getElementById('btnSinPracticas');
+            const inputPracticas = document.getElementById('anoPracticas');
+            const isActive = btn.classList.contains('active');
+            
+            if (!isActive) {
+                btn.classList.add('active');
+                btn.textContent = 'Sí';
+                inputPracticas.disabled = true;
+                inputPracticas.value = '';
+                inputPracticas.classList.remove('input-error');
+                document.getElementById('errorAntiguedad').classList.remove('visible');
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = 'No';
+                inputPracticas.disabled = false;
+                const anoC = parseInt(inputAnoCarrera.value);
+                if (isNaN(anoC)) {
+                    inputPracticas.value = 2010;
+                    inputAnoCarrera.value = 2011;
+                } else {
+                    inputPracticas.value = anoC - 1;
+                }
+            }
+            calcular();
+        }
+
+        // --- CONFIGURACIÓN DEL TEMA ---
+        const themeToggle = document.getElementById('themeToggle');
+        const iconMoon = document.getElementById('iconMoon');
+        const iconSun = document.getElementById('iconSun');
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            if (theme === 'dark') {
+                iconMoon.style.display = 'none';
+                iconSun.style.display = 'block';
+            } else {
+                iconMoon.style.display = 'block';
+                iconSun.style.display = 'none';
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) setTheme(savedTheme);
+        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+
+        themeToggle.addEventListener('click', () => {
+            setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+
+        // --- INICIALIZAR TARJETAS DE IDIOMAS ---
+        function inicializarIdiomas() {
+            const container = document.getElementById('idiomasContainer');
+            container.innerHTML = '';
+            
+            idiomasLista.forEach(idioma => {
+                const card = document.createElement('div');
+                card.className = 'idioma-card';
+                card.innerHTML = `
+                    <div class="idioma-nombre">${idioma.nombre}</div>
+                    <select id="eoi-${idioma.id}" class="input-control calc-input">
+                        <option value="0">Sin EOI</option>
+                        <option value="0.1">EOI B2 (0,10)</option>
+                        <option value="0.2">EOI C1 (0,20)</option>
+                        <option value="0.3">EOI C2 (0,30)</option>
+                    </select>
+                    <select id="acles-${idioma.id}" class="input-control calc-input">
+                        <option value="0">Sin ACLES</option>
+                        <option value="0.1">ACLES B2 (0,10)</option>
+                        <option value="0.2">ACLES C1 (0,20)</option>
+                        <option value="0.3">ACLES C2 (0,30)</option>
+                    </select>
+                `;
+                container.appendChild(card);
+            });
+
+            container.querySelectorAll('.calc-input').forEach(input => {
+                input.addEventListener('input', calcular);
+                input.addEventListener('change', calcular);
+            });
+        }
+
+        // --- LÓGICA DE LA CALCULADORA ---
+        const fmt = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const AÑO_CONVOCATORIA = 2026;
+
+        const TOPES = {
+            trabajoFunciones: 2.5,
+            trabajoTotal: 5.5,
+            formacionTotal: 3.0,
+            academicosTitulos: 1.5,
+            academicosOtros: 1.5,
+            academicosTotal: 3.0,
+            global: 10.0
+        };
+
+        const inputAnoPracticas = document.getElementById('anoPracticas');
+        const inputAnoCarrera = document.getElementById('anoCarrera');
+        const errorAntiguedad = document.getElementById('errorAntiguedad');
+        const btnSinPracticas = document.getElementById('btnSinPracticas');
+        const warningOchoAnos = document.getElementById('warningOchoAnos');
+        const anosFaltantes = document.getElementById('anosFaltantes');
+        const anoFaltanteEstimado = document.getElementById('anoFaltanteEstimado');
+
+        inputAnoPracticas.addEventListener('input', calcular);
+        inputAnoCarrera.addEventListener('input', calcular);
+
+        function calcular() {
+            // --- BLOQUE 1: ANTIGÜEDAD CON VALIDACIÓN Y ESTABILIZACIÓN ---
+            const sinPracticas = btnSinPracticas.classList.contains('active');
+            const anoP = parseInt(inputAnoPracticas.value);
+            const anoC = parseInt(inputAnoCarrera.value);
+            
+            let anosCarrera = 0;
+            let anosBaremables = 0;
+            let errorValidacion = false;
+
+            if (!sinPracticas) {
+                if (isNaN(anoP) || isNaN(anoC)) {
+                    errorValidacion = true;
+                } else {
+                    const diff = anoC - anoP;
+                    if (diff < 1 || diff > 2) {
+                        errorValidacion = true;
+                    }
+                }
+            }
+
+            if (errorValidacion) {
+                inputAnoCarrera.classList.add('input-error');
+                inputAnoPracticas.classList.add('input-error');
+                errorAntiguedad.classList.add('visible');
+                anosCarrera = 0;
+            } else {
+                inputAnoCarrera.classList.remove('input-error');
+                inputAnoPracticas.classList.remove('input-error');
+                errorAntiguedad.classList.remove('visible');
+                anosCarrera = Math.max(0, AÑO_CONVOCATORIA - anoC);
+                anosBaremables = Math.max(0, anosCarrera - 8);
+            }
+            
+            const antiguedad = Math.min(4.0, anosBaremables * 0.4);
+
+            // Mostrar u ocultar aviso de 8 años
+            if (!errorValidacion && anosCarrera < 8 && anosCarrera > 0) {
+                warningOchoAnos.classList.add('visible');
+                const faltan = 8 - anosCarrera;
+                anosFaltantes.textContent = faltan;
+                anoFaltanteEstimado.textContent = AÑO_CONVOCATORIA + faltan;
+            } else {
+                warningOchoAnos.classList.remove('visible');
+            }
+
+            let textoResultado = `Años de carrera hasta ${AÑO_CONVOCATORIA}: <strong>${anosCarrera}</strong> | `;
+            if (!sinPracticas && !errorValidacion) {
+                textoResultado += `Prácticas: ${anoP} | `;
+            } else if (sinPracticas) {
+                textoResultado += `<em>(Sin prácticas)</em> | `;
+            }
+            textoResultado += `Exceso > 8 años: <strong>${anosBaremables}</strong> | Ptos: <span class="highlight">${fmt.format(antiguedad)}</span> / 4,0000`;
+
+            document.getElementById('resultadoAntiguedad').innerHTML = textoResultado;
+
+            let funciones = 0;
+            funciones += (parseFloat(document.getElementById('director').value) || 0) * 0.125;
+            funciones += (parseFloat(document.getElementById('vice').value) || 0) * 0.100;
+            funciones += (parseFloat(document.getElementById('jefeDep').value) || 0) * 0.075;
+            funciones += (parseFloat(document.getElementById('serviciosAdm').value) || 0);
+            funciones += (parseFloat(document.getElementById('organosSeleccion').value) || 0) * 0.075;
+            funciones += (parseFloat(document.getElementById('tutorizaciones').value) || 0) * 0.050;
+            funciones += (parseFloat(document.getElementById('dificultad').value) || 0) * 0.020;
+            funciones += (parseFloat(document.getElementById('consejos').value) || 0) * 0.020;
+            funciones += (parseFloat(document.getElementById('colaboradorEOI').value) || 0) * 0.020;
+            
+            funciones = Math.min(TOPES.trabajoFunciones, funciones);
+            const totalTrabajo = Math.min(TOPES.trabajoTotal, antiguedad + funciones);
+
+            // --- BLOQUE 2 ---
+            const horasAsistidas = (parseFloat(document.getElementById('horasAsistidas').value) || 0);
+            const puntosAsistidas = Math.floor(horasAsistidas / 20) * 0.075;
+            
+            const horasImpartidas = (parseFloat(document.getElementById('horasImpartidas').value) || 0);
+            const puntosImpartidas = Math.floor(horasImpartidas / 20) * 0.150;
+            
+            const especialidades = (parseFloat(document.getElementById('especialidades').value) || 0) * 0.050;
+            const digital = parseFloat(document.getElementById('digital').value) || 0;
+
+            const totalFormacion = Math.min(TOPES.formacionTotal, puntosAsistidas + puntosImpartidas + especialidades + digital);
+
+            // --- BLOQUE 3: TÍTULOS E IDIOMAS (3.1) ---
+            let titulos = 0;
+            if(document.getElementById('docVinculado').checked) titulos += 0.6;
+            if(document.getElementById('docNoVinculado').checked) titulos += 0.4;
+            if(document.getElementById('licenciatura').checked) titulos += 0.4;
+            if(document.getElementById('diplomatura').checked) titulos += 0.25;
+            if(document.getElementById('premio').checked) titulos += 0.1;
+            
+            const numMasters = (parseFloat(document.getElementById('numMasters').value) || 0);
+            titulos += numMasters * 0.3;
+
+            titulos += (parseFloat(document.getElementById('titulosProfesionales').value) || 0) * 0.125;
+            
+            let puntosIdiomas = 0;
+            idiomasLista.forEach(idioma => {
+                const eoi = parseFloat(document.getElementById(`eoi-${idioma.id}`).value) || 0;
+                const acles = parseFloat(document.getElementById(`acles-${idioma.id}`).value) || 0;
+                puntosIdiomas += Math.max(eoi, acles);
+            });
+            
+            titulos += puntosIdiomas;
+
+            titulos = Math.min(TOPES.academicosTitulos, titulos);
+
+            // --- BLOQUE 3: OTROS MÉRITOS (3.2, 3.3, 3.4) ---
+            let otros = 0;
+            otros += (parseFloat(document.getElementById('libroAutor').value) || 0) * 0.25;
+            otros += (parseFloat(document.getElementById('libro2Autores').value) || 0) * 0.15;
+            otros += (parseFloat(document.getElementById('libro3Autores').value) || 0) * 0.10;
+            otros += (parseFloat(document.getElementById('libro4Autores').value) || 0) * 0.05;
+
+            otros += (parseFloat(document.getElementById('revistaAutor').value) || 0) * 0.10;
+            otros += (parseFloat(document.getElementById('revistaCoautor').value) || 0) * 0.05;
+            otros += (parseFloat(document.getElementById('revista3Autores').value) || 0) * 0.04;
+
+            otros += (parseFloat(document.getElementById('proyectos').value) || 0);
+            otros += (parseFloat(document.getElementById('planesAsociado').value) || 0);
+
+            if (!document.getElementById('bloqueMusica').classList.contains('hidden')) {
+                otros += (parseFloat(document.getElementById('conciertosMusica').value) || 0);
+                otros += (parseFloat(document.getElementById('composicionesMusica').value) || 0);
+            }
+            if (!document.getElementById('bloqueEdFisica').classList.contains('hidden')) {
+                if(document.getElementById('deportistaAltoNivel').checked) otros += 0.05;
+            }
+
+            otros = Math.min(TOPES.academicosOtros, otros);
+            const totalAcademicos = Math.min(TOPES.academicosTotal, titulos + otros);
+
+            // --- TOTAL GLOBAL ---
+            const totalGlobal = Math.min(TOPES.global, totalTrabajo + totalFormacion + totalAcademicos);
+
+            // --- ACTUALIZAR UI ---
+            document.getElementById('totalScoreDisplay').textContent = fmt.format(totalGlobal);
+            document.getElementById('headerTotal').textContent = fmt.format(totalGlobal);
+            
+            document.getElementById('scoreTrabajo').textContent = `${fmt.format(totalTrabajo)} / 5,50`;
+            document.getElementById('scoreFormacion').textContent = `${fmt.format(totalFormacion)} / 3,00`;
+            document.getElementById('scoreAcademicos').textContent = `${fmt.format(totalAcademicos)} / 3,00`;
+
+            document.getElementById('progressBar').style.width = `${(totalGlobal / TOPES.global) * 100}%`;
+
+            actualizarBloque('cardBloque1', 'badgeBloque1', 'barTrabajo', totalTrabajo, TOPES.trabajoTotal);
+            actualizarBloque('cardBloque2', 'badgeBloque2', 'barFormacion', totalFormacion, TOPES.formacionTotal);
+            actualizarBloque('cardBloque3', 'badgeBloque3', 'barAcademicos', totalAcademicos, TOPES.academicosTotal);
+
+            guardarDatos();
+        }
+
+        function actualizarBloque(cardId, badgeId, barId, valorActual, valorMax) {
+            const card = document.getElementById(cardId);
+            const badge = document.getElementById(badgeId);
+            const bar = document.getElementById(barId);
+
+            bar.style.width = `${(valorActual / valorMax) * 100}%`;
+
+            if (valorActual >= valorMax - 0.001) {
+                card.classList.add('max-reached');
+                badge.textContent = `¡MÁXIMO! ${fmt.format(valorMax)} ptos.`;
+            } else {
+                card.classList.remove('max-reached');
+                badge.textContent = `máx. ${fmt.format(valorMax).replace(',00', ',0')} ptos.`;
+            }
+        }
+
+        const inputs = document.querySelectorAll('.calc-input');
+        inputs.forEach(input => {
+            input.addEventListener('input', calcular);
+            input.addEventListener('change', calcular);
+        });
+
+        // --- PERSISTENCIA ---
+        function guardarDatos() {
+            const datos = {
+                inputs: {},
+                idiomas: {},
+                sinPracticas: btnSinPracticas.classList.contains('active')
+            };
+            
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') datos.inputs[input.id] = input.checked;
+                else datos.inputs[input.id] = input.value;
+            });
+
+            idiomasLista.forEach(idioma => {
+                datos.idiomas[`eoi-${idioma.id}`] = document.getElementById(`eoi-${idioma.id}`).value;
+                datos.idiomas[`acles-${idioma.id}`] = document.getElementById(`acles-${idioma.id}`).value;
+            });
+
+            localStorage.setItem('baremoCatedraticos2026', JSON.stringify(datos));
+        }
+
+        function cargarDatos() {
+            inicializarIdiomas();
+
+            const guardado = localStorage.getItem('baremoCatedraticos2026');
+            if (guardado) {
+                const datos = JSON.parse(guardado);
+                
+                if (datos.inputs) {
+                    inputs.forEach(input => {
+                        if (datos.inputs[input.id] !== undefined) {
+                            if (input.type === 'checkbox') input.checked = datos.inputs[input.id];
+                            else input.value = datos.inputs[input.id];
+                        }
+                    });
+                }
+
+                if (datos.idiomas) {
+                    idiomasLista.forEach(idioma => {
+                        const eoiVal = datos.idiomas[`eoi-${idioma.id}`];
+                        const aclesVal = datos.idiomas[`acles-${idioma.id}`];
+                        
+                        if (eoiVal) document.getElementById(`eoi-${idioma.id}`).value = eoiVal;
+                        if (aclesVal) document.getElementById(`acles-${idioma.id}`).value = aclesVal;
+                    });
+                }
+
+                if (datos.sinPracticas) {
+                    btnSinPracticas.classList.add('active');
+                    btnSinPracticas.textContent = 'Sí';
+                    inputAnoPracticas.disabled = true;
+                    inputAnoPracticas.value = '';
+                }
+            }
+            
+            toggleEspecialidades();
+            calcular();
+        }
+
+        function reiniciar() {
+            if(confirm("¿Seguro que quieres borrar todos los datos introducidos?")) {
+                localStorage.removeItem('baremoCatedraticos2026');
+                
+                inputs.forEach(input => {
+                    if (input.type === 'checkbox') input.checked = false;
+                    else if (input.tagName === 'SELECT') input.selectedIndex = 0;
+                    else input.value = 0;
+                });
+                
+                document.getElementById('anoPracticas').value = 2010;
+                document.getElementById('anoPracticas').disabled = false;
+                document.getElementById('anoCarrera').value = 2011;
+                document.getElementById('especialidadEspecifica').value = 'ninguna';
+                inputAnoCarrera.classList.remove('input-error');
+                inputAnoPracticas.classList.remove('input-error');
+                errorAntiguedad.classList.remove('visible');
+                warningOchoAnos.classList.remove('visible');
+                
+                btnSinPracticas.classList.remove('active');
+                btnSinPracticas.textContent = 'No';
+                
+                idiomasLista.forEach(idioma => {
+                    document.getElementById(`eoi-${idioma.id}`).value = '0';
+                    document.getElementById(`acles-${idioma.id}`).value = '0';
+                });
+                
+                toggleEspecialidades();
+                calcular();
+            }
+        }
+
+        function copiarResumen() {
+            const total = document.getElementById('totalScoreDisplay').textContent;
+            const trabajo = document.getElementById('scoreTrabajo').textContent;
+            const formacion = document.getElementById('scoreFormacion').textContent;
+            const academicos = document.getElementById('scoreAcademicos').textContent;
+
+            const texto = `📊 BAREMO CATEDRÁTICOS ANDALUCÍA 2026\n\n` +
+                          `1. Trabajo desarrollado: ${trabajo}\n` +
+                          `2. Formación: ${formacion}\n` +
+                          `3. Méritos académicos: ${academicos}\n\n` +
+                          `TOTAL ESTIMADO: ${total} ptos.\n\n` +
+                          `(Calculado con la herramienta orientativa - BOJA n.º 183)`;
+
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("¡Resumen copiado al portapapeles!");
+            }).catch(err => {
+                alert("Error al copiar. Revisa los permisos de tu navegador.");
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarDatos);
+    </script>
+</body>
 </html>
