@@ -1,5 +1,7 @@
 # Calculadora de Baremo - Catedráticos Andalucía 2026
 
+✅ Accesible aquí ([https://fcallejah.github.io/calculadora-ConCatedr-And/]) ✅
+
 Herramienta web interactiva diseñada para que el profesorado de Andalucía pueda **calcular de forma orientativa y sencilla** la puntuación de sus méritos para el concurso de acceso a Catedráticos (Orden de 18 de septiembre de 2026, BOJA n.º 183).
 
 La aplicación traduce la complejidad del baremo oficial (10 puntos divididos en 3 bloques) a una interfaz visual, moderna e intuitiva.
